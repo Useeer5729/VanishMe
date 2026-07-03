@@ -136,6 +136,10 @@ VanishMe 能够通过以下指纹检测网站的测试：
 
 ---
 
+**学 AI 上 LinuxDo: https://linux.do/**
+
+---
+
 ## English
 
 <div align="center">
@@ -264,3 +268,7 @@ VanishMe can pass tests from the following fingerprint detection sites:
 </table>
 
 As you can see, after using VanishMe, all APIs show as native, completely hiding modification traces.
+
+---
+
+**Learn AI at LinuxDo: https://linux.do/**
