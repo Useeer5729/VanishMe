@@ -6,13 +6,34 @@ export async function getConfig() {
     try {
         const result = await chrome.storage.local.get(STORAGE_KEY);
         if (result[STORAGE_KEY]) {
-            // 深度合并，确保新字段（如 canvas）有默认值
+            const stored = result[STORAGE_KEY];
+            // 深度合并，确保所有新字段都有默认值
             return {
                 ...DEFAULT_CONFIG,
-                ...result[STORAGE_KEY],
+                ...stored,
+                geolocation: {
+                    ...DEFAULT_CONFIG.geolocation,
+                    ...(stored.geolocation || {})
+                },
+                webrtc: {
+                    ...DEFAULT_CONFIG.webrtc,
+                    ...(stored.webrtc || {})
+                },
+                language: {
+                    ...DEFAULT_CONFIG.language,
+                    ...(stored.language || {})
+                },
+                timezone: {
+                    ...DEFAULT_CONFIG.timezone,
+                    ...(stored.timezone || {})
+                },
                 canvas: {
                     ...DEFAULT_CONFIG.canvas,
-                    ...(result[STORAGE_KEY].canvas || {})
+                    ...(stored.canvas || {})
+                },
+                profile: {
+                    ...DEFAULT_CONFIG.profile,
+                    ...(stored.profile || {})
                 }
             };
         }
