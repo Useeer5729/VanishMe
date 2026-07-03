@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VanishMe</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>VanishMe</h1>
+      <div class="global-toggle">
+        <label class="switch">
+          <input type="checkbox" id="globalEnabled">
+          <span class="slider"></span>
+        </label>
+        <span id="globalStatus">Global Protection</span>
+      </div>
+    </header>
+
+    <section class="site-status">
+      <div class="site-info">
+        <span class="label">Current site:</span>
+        <span id="currentSite">-</span>
+      </div>
+      <div class="site-actions">
+        <button id="enableSite" class="btn-secondary">Enable</button>
+        <button id="disableSite" class="btn-secondary">Disable</button>
+      </div>
+    </section>
+
+    <section class="profile-section">
+      <h2>Quick Profile</h2>
+      <select id="profileSelect" class="input">
+        <option value="">Custom</option>
+        <option value="singapore">Singapore</option>
+        <option value="japan">Japan</option>
+        <option value="germany">Germany</option>
+        <option value="united-states">United States</option>
+        <option value="china">China</option>
+      </select>
+      <button id="applyProfile" class="btn-primary">Apply Profile</button>
+    </section>
+
+    <section class="config-section">
+      <details open>
+        <summary>Geolocation</summary>
+        <div class="config-content">
+          <label class="checkbox-label">
+            <input type="checkbox" id="geolocationEnabled">
+            <span>Enabled</span>
+          </label>
+          <div class="input-group">
+            <label>Latitude:</label>
+            <input type="number" id="latitude" class="input" step="any" min="-90" max="90">
+          </div>
+          <div class="input-group">
+            <label>Longitude:</label>
+            <input type="number" id="longitude" class="input" step="any" min="-180" max="180">
+          </div>
+          <div class="input-group">
+            <label>Accuracy (m):</label>
+            <input type="number" id="accuracy" class="input" step="1" min="1">
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="randomize">
+            <span>Randomize</span>
+          </label>
+          <div class="input-group">
+            <label>Random radius (m):</label>
+            <input type="number" id="randomRadiusMeters" class="input" step="1" min="0">
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="spoofPermission">
+            <span>Spoof permission</span>
+          </label>
+          <button id="saveCoordinate" class="btn-secondary btn-sm">Save Current</button>
+        </div>
+      </details>
+
+      <details>
+        <summary>Timezone</summary>
+        <div class="config-content">
+          <label class="checkbox-label">
+            <input type="checkbox" id="timezoneEnabled">
+            <span>Enabled</span>
+          </label>
+          <div class="input-group">
+            <label>Timezone:</label>
+            <input type="text" id="timezone" class="input" placeholder="Asia/Singapore">
+          </div>
+          <div class="input-group">
+            <label>Offset (min):</label>
+            <input type="number" id="offsetMinutes" class="input" step="1">
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Language</summary>
+        <div class="config-content">
+          <label class="checkbox-label">
+            <input type="checkbox" id="languageEnabled">
+            <span>Enabled</span>
+          </label>
+          <div class="input-group">
+            <label>Language:</label>
+            <input type="text" id="language" class="input" placeholder="en-US">
+          </div>
+          <div class="input-group">
+            <label>Languages:</label>
+            <input type="text" id="languages" class="input" placeholder="en-US, en">
+          </div>
+          <div class="input-group">
+            <label>Accept-Language:</label>
+            <input type="text" id="acceptLanguage" class="input" placeholder="en-US,en;q=0.9">
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>WebRTC</summary>
+        <div class="config-content">
+          <label class="checkbox-label">
+            <input type="checkbox" id="webrtcEnabled">
+            <span>Enabled</span>
+          </label>
+          <div class="input-group">
+            <label>Policy:</label>
+            <select id="webrtcPolicy" class="input">
+              <option value="default">Default</option>
+              <option value="default_public_interface_only">Public interface only</option>
+              <option value="default_public_and_private_interfaces">Public and private</option>
+              <option value="disable_non_proxied_udp">Disable non-proxied UDP</option>
+            </select>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <footer>
+      <button id="save" class="btn-primary">Save</button>
+      <button id="openLeakTest" class="btn-secondary">Leak Test</button>
+      <button id="reset" class="btn-secondary">Reset</button>
+    </footer>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
