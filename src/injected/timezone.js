@@ -14,18 +14,43 @@ export function installTimezoneSpoof(config) {
     catch (error) {
         console.warn('Failed to spoof getTimezoneOffset:', error);
     }
-    // Spoof Intl.DateTimeFormat.prototype.resolvedOptions
+    // Spoof Intl.DateTimeFormat - wrap the entire constructor
     if (window.Intl && Intl.DateTimeFormat) {
-        const originalResolvedOptions = originals.intlResolvedOptions || Intl.DateTimeFormat.prototype.resolvedOptions;
+        const OriginalDateTimeFormat = Intl.DateTimeFormat;
         try {
-            Intl.DateTimeFormat.prototype.resolvedOptions = function () {
-                const options = originalResolvedOptions.call(this);
-                options.timeZone = targetTimezone;
-                return options;
+            // @ts-ignore
+            Intl.DateTimeFormat = function DateTimeFormat(...args) {
+                // Create the original formatter
+                const formatter = new OriginalDateTimeFormat(...args);
+                // Save original resolvedOptions
+                const originalResolvedOptions = formatter.resolvedOptions;
+                // Override resolvedOptions on this instance
+                formatter.resolvedOptions = function () {
+                    const options = originalResolvedOptions.call(this);
+                    // Use Proxy to intercept property access
+                    return new Proxy(options, {
+                        get(target, prop) {
+                            if (prop === 'timeZone') {
+                                console.log('VanishMe: Proxy intercepted timeZone access, returning:', targetTimezone);
+                                return targetTimezone;
+                            }
+                            return target[prop];
+                        }
+                    });
+                };
+                return formatter;
             };
+            // Copy static properties
+            Object.setPrototypeOf(Intl.DateTimeFormat, OriginalDateTimeFormat);
+            // @ts-ignore
+            Object.defineProperty(Intl.DateTimeFormat, 'prototype', {
+                value: OriginalDateTimeFormat.prototype,
+                writable: false
+            });
+            console.log('VanishMe: Successfully installed Intl.DateTimeFormat spoof with Proxy');
         }
         catch (error) {
-            console.warn('Failed to spoof Intl.DateTimeFormat.resolvedOptions:', error);
+            console.warn('Failed to spoof Intl.DateTimeFormat:', error);
         }
     }
     // Generate timezone abbreviation from timezone name
