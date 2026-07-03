@@ -6,8 +6,9 @@ const globalStatusEl = document.getElementById('globalStatus');
 const currentSiteEl = document.getElementById('currentSite');
 const enableSiteBtn = document.getElementById('enableSite');
 const disableSiteBtn = document.getElementById('disableSite');
-const profileSelectEl = document.getElementById('profileSelect');
-const applyProfileBtn = document.getElementById('applyProfile');
+const matchModeEl = document.getElementById('matchMode');
+const domainListEl = document.getElementById('domainList');
+const openOptionsHeaderBtn = document.getElementById('openOptionsHeader');
 const geolocationEnabledEl = document.getElementById('geolocationEnabled');
 const latitudeEl = document.getElementById('latitude');
 const longitudeEl = document.getElementById('longitude');
@@ -27,6 +28,7 @@ const acceptLanguageEl = document.getElementById('acceptLanguage');
 const webrtcEnabledEl = document.getElementById('webrtcEnabled');
 const webrtcPolicyEl = document.getElementById('webrtcPolicy');
 const saveBtn = document.getElementById('save');
+const openOptionsBtn = document.getElementById('openOptions');
 const openLeakTestBtn = document.getElementById('openLeakTest');
 const resetBtn = document.getElementById('reset');
 let currentConfig;
@@ -47,9 +49,11 @@ async function loadConfig() {
     // Populate UI
     globalEnabledEl.checked = currentConfig.globalEnabled;
     updateGlobalStatus();
-    // Profile
-    profileSelectEl.value = currentConfig.profile.activeProfileId || '';
+    // Match mode
+    matchModeEl.value = currentConfig.matchMode || 'global';
+    domainListEl.value = (currentConfig.domainList || []).join('\n');
     // Geolocation
+    geolocationEnabledEl.checked = currentConfig.geolocation.enabled;
     geolocationEnabledEl.checked = currentConfig.geolocation.enabled;
     latitudeEl.value = currentConfig.geolocation.latitude.toString();
     longitudeEl.value = currentConfig.geolocation.longitude.toString();
@@ -77,6 +81,11 @@ function updateGlobalStatus() {
 }
 async function saveChanges() {
     try {
+        // Parse domain list
+        const domainListArray = domainListEl.value
+            .split('\n')
+            .map(d => d.trim())
+            .filter(d => d.length > 0);
         // Parse languages
         const languagesArray = languagesEl.value
             .split(',')
@@ -108,6 +117,8 @@ async function saveChanges() {
         // UTC+8 (Singapore) = +8 hours = -480 minutes offset
         const offsetMinutes = -utcOffsetHours * 60;
         currentConfig.globalEnabled = globalEnabledEl.checked;
+        currentConfig.matchMode = matchModeEl.value;
+        currentConfig.domainList = domainListArray;
         currentConfig.geolocation.enabled = geolocationEnabledEl.checked;
         currentConfig.geolocation.latitude = lat;
         currentConfig.geolocation.longitude = lon;
@@ -137,13 +148,20 @@ async function saveChanges() {
         alert('保存配置失败');
     }
 }
-async function handleApplyProfile() {
-    const profileId = profileSelectEl.value;
+async function handleApplyProfile(profileId) {
     if (!profileId)
         return;
+    if (!confirm('应用此配置会覆盖当前设置，确定继续吗？')) {
+        return;
+    }
     try {
         await applyProfile(profileId);
         await loadConfig();
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+            chrome.tabs.reload(tab.id);
+        }
+        window.close();
     }
     catch (error) {
         console.error('Failed to apply profile:', error);
@@ -153,7 +171,28 @@ async function handleApplyProfile() {
 async function handleEnableSite() {
     if (!currentHostname)
         return;
-    currentConfig.siteRules[currentHostname] = { enabled: true };
+    const domainListArray = domainListEl.value
+        .split('\n')
+        .map(d => d.trim())
+        .filter(d => d.length > 0);
+    // Add to whitelist or remove from blacklist depending on match mode
+    if (currentConfig.matchMode === 'whitelist') {
+        // Add to whitelist if not already there
+        if (!domainListArray.includes(currentHostname)) {
+            domainListArray.push(currentHostname);
+            currentConfig.domainList = domainListArray;
+            domainListEl.value = domainListArray.join('\n');
+        }
+    }
+    else if (currentConfig.matchMode === 'blacklist') {
+        // Remove from blacklist
+        const index = domainListArray.indexOf(currentHostname);
+        if (index > -1) {
+            domainListArray.splice(index, 1);
+            currentConfig.domainList = domainListArray;
+            domainListEl.value = domainListArray.join('\n');
+        }
+    }
     await setConfig(currentConfig);
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab?.id) {
@@ -164,7 +203,28 @@ async function handleEnableSite() {
 async function handleDisableSite() {
     if (!currentHostname)
         return;
-    currentConfig.siteRules[currentHostname] = { enabled: false };
+    const domainListArray = domainListEl.value
+        .split('\n')
+        .map(d => d.trim())
+        .filter(d => d.length > 0);
+    // Add to blacklist or remove from whitelist depending on match mode
+    if (currentConfig.matchMode === 'blacklist') {
+        // Add to blacklist if not already there
+        if (!domainListArray.includes(currentHostname)) {
+            domainListArray.push(currentHostname);
+            currentConfig.domainList = domainListArray;
+            domainListEl.value = domainListArray.join('\n');
+        }
+    }
+    else if (currentConfig.matchMode === 'whitelist') {
+        // Remove from whitelist
+        const index = domainListArray.indexOf(currentHostname);
+        if (index > -1) {
+            domainListArray.splice(index, 1);
+            currentConfig.domainList = domainListArray;
+            domainListEl.value = domainListArray.join('\n');
+        }
+    }
     await setConfig(currentConfig);
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab?.id) {
@@ -200,6 +260,9 @@ function handleOpenLeakTest() {
     chrome.tabs.create({
         url: chrome.runtime.getURL('leak-test/leak-test.html')
     });
+}
+function handleOpenOptions() {
+    chrome.runtime.openOptionsPage();
 }
 async function handleReset() {
     if (confirm('重置所有设置为默认值？')) {
@@ -252,13 +315,23 @@ async function handleGetFromIP() {
 }
 // Event listeners
 globalEnabledEl.addEventListener('change', updateGlobalStatus);
-applyProfileBtn.addEventListener('click', handleApplyProfile);
 enableSiteBtn.addEventListener('click', handleEnableSite);
 disableSiteBtn.addEventListener('click', handleDisableSite);
 saveCoordinateBtn.addEventListener('click', handleSaveCoordinate);
 getFromIPBtn.addEventListener('click', handleGetFromIP);
 saveBtn.addEventListener('click', saveChanges);
+openOptionsBtn.addEventListener('click', handleOpenOptions);
+openOptionsHeaderBtn.addEventListener('click', handleOpenOptions);
 openLeakTestBtn.addEventListener('click', handleOpenLeakTest);
 resetBtn.addEventListener('click', handleReset);
+// Profile card click handlers
+document.querySelectorAll('.profile-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const profileId = card.dataset.profile;
+        if (profileId) {
+            handleApplyProfile(profileId);
+        }
+    });
+});
 // Initialize
 loadConfig();

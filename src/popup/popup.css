@@ -23,6 +23,35 @@ header {
   border-bottom: 1px solid #333;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+.icon-btn:active {
+  background: #444;
+}
+
 h1 {
   font-size: 20px;
   font-weight: 600;
@@ -97,6 +126,31 @@ section {
   margin-bottom: 16px;
 }
 
+.match-mode-section {
+  background: #252525;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.match-mode-section h2 {
+  margin-bottom: 10px;
+}
+
+.match-mode-section textarea {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+  font-style: italic;
+}
+
 .site-status {
   padding: 12px;
   background: #252525;
@@ -133,12 +187,45 @@ section {
 }
 
 .profile-section h2 {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
-#profileSelect {
-  width: 100%;
-  margin-bottom: 8px;
+.profile-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.profile-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.profile-card:hover {
+  background: #2a2a2a;
+  border-color: #4caf50;
+  transform: translateY(-1px);
+}
+
+.profile-card:active {
+  transform: translateY(0);
+}
+
+.profile-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.profile-card-info {
+  font-size: 11px;
+  color: #888;
 }
 
 .config-section details {
@@ -255,11 +342,12 @@ footer {
   gap: 8px;
   padding-top: 12px;
   border-top: 1px solid #333;
+  flex-wrap: wrap;
 }
 
 footer .btn-primary {
-  width: auto;
-  flex: 2;
+  width: 100%;
+  flex: 1 1 100%;
 }
 
 footer .btn-secondary {
