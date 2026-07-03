@@ -46,7 +46,6 @@ export default defineConfig({
       },
       output: {
         entryFileNames: '[name].js',
-        chunkFileNames: 'chunks/[name].[hash].js',
         assetFileNames: (assetInfo) => {
           const name = assetInfo.name || '';
           if (name.endsWith('.css')) {
@@ -56,7 +55,15 @@ export default defineConfig({
           }
           return 'assets/[name].[hash][extname]';
         }
-      }
+      },
+      // Prevent automatic code splitting by not sharing modules
+      preserveEntrySignatures: 'strict'
+    },
+    target: 'esnext',
+    minify: false,
+    // Force Rollup to inline shared code instead of creating chunks
+    commonjsOptions: {
+      transformMixedEsModules: true
     }
   },
   resolve: {
