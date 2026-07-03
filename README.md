@@ -1,8 +1,6 @@
-# VanishMe
-
 <div align="center">
 
-**浏览器隐私保护扩展 - 伪装你的浏览器指纹**
+<img src="images/banner-zh.png" alt="VanishMe Banner" width="100%"/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-blue.svg)](https://www.google.com/chrome/)
@@ -139,6 +137,12 @@ VanishMe 能够通过以下指纹检测网站的测试：
 ---
 
 ## English
+
+<div align="center">
+
+<img src="images/banner-en.png" alt="VanishMe Banner" width="100%"/>
+
+</div>
 
 VanishMe is a powerful browser privacy protection extension that helps you disguise your browser fingerprint and avoid tracking by websites. Supports multi-dimensional privacy protection including geolocation, timezone, language, WebRTC, and more.
 
