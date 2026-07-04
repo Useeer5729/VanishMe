@@ -23,35 +23,6 @@ import { setupCanvasSpoofing } from './canvas-spoofing';
     }
   };
 
-  log('Injected script loaded, installing Canvas anti-detection immediately...');
-
-  // CRITICAL: Install Canvas spoofing IMMEDIATELY with default config
-  // This must happen before any page script runs to detect fonts
-  // Font list is inlined to avoid import issues in MAIN world
-  try {
-    setupCanvasSpoofing({
-      enabled: true,
-      spoofFonts: true,
-      targetFonts: [
-        // Windows 简体中文字体
-        'Microsoft YaHei', 'Microsoft YaHei UI', 'SimSun', 'NSimSun', 'SimHei',
-        'KaiTi', 'FangSong', 'DengXian',
-        // macOS 简体中文字体
-        'PingFang SC', 'Hiragino Sans GB', 'STHeiti', 'STSong', 'Songti SC',
-        // 开源简体中文字体
-        'Source Han Sans CN', 'Source Han Sans SC',
-        'Noto Sans CJK SC', 'Noto Serif CJK SC',
-        'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei',
-        // 繁体中文字体
-        'Microsoft JhengHei', 'PMingLiU', 'MingLiU', 'DFKai-SB',
-        'PingFang TC', 'PingFang HK', 'Source Han Sans TW', 'Noto Sans CJK TC'
-      ]
-    });
-    log('Canvas anti-detection installed at document_start');
-  } catch (error) {
-    console.error('VanishMe: Failed to install early Canvas spoof:', error);
-  }
-
   log('Requesting full config...');
 
   // Request config from content script
@@ -99,8 +70,8 @@ import { setupCanvasSpoofing } from './canvas-spoofing';
           installLanguageSpoof(config.language);
         }
         if (config.canvas && config.canvas.enabled) {
-          log('Canvas already installed, skipping...');
-          // Canvas spoofing was already installed at document_start, no need to reinstall
+          log('Installing Canvas spoof');
+          setupCanvasSpoofing(config.canvas);
         }
         log('All spoofs installed successfully');
 
