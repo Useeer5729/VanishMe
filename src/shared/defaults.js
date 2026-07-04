@@ -162,7 +162,20 @@ export const DEFAULT_CONFIG = {
     canvas: {
         enabled: false, // 默认关闭，需要用户手动启用
         spoofFonts: true,
-        targetFonts: ['Microsoft YaHei', 'SimSun', 'SimHei', 'PingFang SC', 'Hiragino Sans GB', 'STHeiti'] // 隐藏这些中文字体，避免被检测
+        targetFonts: [
+            // Windows 简体中文字体
+            'Microsoft YaHei', 'Microsoft YaHei UI', 'SimSun', 'NSimSun', 'SimHei',
+            'KaiTi', 'FangSong', 'DengXian',
+            // macOS 简体中文字体
+            'PingFang SC', 'Hiragino Sans GB', 'STHeiti', 'STSong', 'Songti SC',
+            // 开源简体中文字体
+            'Source Han Sans CN', 'Source Han Sans SC',
+            'Noto Sans CJK SC', 'Noto Serif CJK SC',
+            'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei',
+            // 繁体中文字体
+            'Microsoft JhengHei', 'PMingLiU', 'MingLiU', 'DFKai-SB',
+            'PingFang TC', 'PingFang HK', 'Source Han Sans TW', 'Noto Sans CJK TC'
+        ]
     },
     profile: {
         activeProfileId: 'singapore',
