@@ -51,6 +51,10 @@
         <button id="saveAsCustom" class="btn-secondary">另存为自定义配置</button>
       </div>
 
+      <div class="action-buttons" style="margin-bottom: 16px;">
+        <button id="getFromIP" class="btn-primary" style="width: 100%;">🌐 从 IP 自动配置（地理位置 + 时区 + 语言）</button>
+      </div>
+
       <div class="config-tabs">
         <button class="tab-btn active" data-tab="geolocation">地理位置</button>
         <button class="tab-btn" data-tab="timezone">时区</button>
@@ -59,9 +63,6 @@
       </div>
 
       <div class="tab-content active" data-tab="geolocation">
-        <div class="action-buttons" style="margin-bottom: 16px;">
-          <button id="getFromIP" class="btn-primary" style="width: 100%;">🌐 从 IP 自动配置（地理位置 + 时区 + 语言）</button>
-        </div>
         <label class="checkbox-label">
           <input type="checkbox" id="geolocationEnabled">
           <span>启用地理位置伪装</span>
@@ -92,7 +93,6 @@
           <input type="checkbox" id="spoofPermission">
           <span>伪装地理位置权限</span>
         </label>
-      </div>
       </div>
 
       <div class="tab-content" data-tab="timezone">
